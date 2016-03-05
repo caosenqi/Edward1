@@ -16,6 +16,9 @@ class Likelihood:
     def print_params(self, sess):
         raise NotImplementedError()
 
+    def set_params(self, lamda):
+        raise NotImplementedError()
+
     # TODO if possible but don't force Inference to see these
     #def sample_noise(self, size):
     #    """
@@ -80,6 +83,9 @@ class MFBernoulli:
         print("probability:")
         print(p)
 
+    def set_params(self, lamda):
+        self.p_unconst = lamda
+
     def sample(self, size, sess):
         """z ~ q(z | lambda)"""
         p = sess.run([self.transform(self.p_unconst)])[0]
@@ -125,6 +131,10 @@ class MFBeta:
         print(a)
         print("scale:")
         print(b)
+
+    def set_params(self, lamda):
+        self.a_unconst = lamda[:num_vars]
+        self.b_unconst = lamda[num_vars:]
 
     def sample(self, size, sess):
         """z ~ q(z | lambda)"""
@@ -172,6 +182,10 @@ class MFGaussian:
         print(m)
         print("std dev:")
         print(s)
+
+    def set_params(self, lamda):
+        self.m_unconst = lamda[:num_vars]
+        self.s_unconst = lamda[num_vars:]
 
     def sample_noise(self, size):
         """

@@ -15,11 +15,12 @@ class HVM:
     """
     def __init__(self, q_lik, q_prior, r_post):
         self.q_lik = q_lik
-        # TODO don't make q_mf's parameters tf Variables anymore but
-        # empty arrays
-        #self.q_mf.set_params()
         self.q_prior = q_prior
         self.r_post = r_post
+
+        # Zero out q_lik's params so it is no longer a tf.Variable
+        # object
+        self.q_lik.set_params(tf.zeros([self.q_lik.num_params]))
 
     def print_params(self, sess):
         self.q_prior.print_params(sess)
@@ -31,5 +32,5 @@ class HVM:
         """
         eps = self.q_prior.sample_noise(size, sess)
         lamda = self.q_prior.reparam(size, sess)
-        self.q_mf.set_params(lamda) # TODO
+        self.q_mf.set_params(lamda)
         return self.q_mf.sample(size, sess)
