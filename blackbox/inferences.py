@@ -151,3 +151,61 @@ class MFVI(Inference):
                 self.model.log_prob(x, z) - q_log_prob)
 
         return -self.elbos
+
+class HVI(Inference):
+    """
+    Variational inference with a hierarchical variational model
+    (Ranganath et al., 2015)
+    """
+    def __init__(self, *args, **kwargs):
+        Inference.__init__(self, *args, **kwargs)
+
+    def build_score_loss(self):
+        """
+        Loss function to minimize, whose gradient is a stochastic
+        gradient based on the score function estimator.
+        (This is if q_mf uses score loss)
+        """
+        x = self.data.sample(self.n_data)
+        # TODO
+        # This comes after q_mf newly set the params from the previous
+        # sampling. Maybe q_mf should abstract away from holding the
+        # parameters then, or we should set them after having the
+        # lambda_samples in this function.
+        # TODO generalize to > 1 minibatch sample
+        # ELBO = E_{q(z, lambda; theta)} [
+        #   log p(x, z) - log q(z | lambda) - log q(lambda | theta) +
+        #   log r(lambda | z, phi) ]
+        q_mf_lpdf = tf.zeros([self.n_minibatch], dtype=tf.float32)
+        for i in range(self.variational.num_vars):
+            q_mf_lpdf += self.variational.q_mf.log_prob_zi(i, self.samples)
+
+        # TODO
+        # This comes after q_prior and r_post newly stores the lambda
+        # samples from the previous sampling.
+        q_prior_lpdf = self.variational.q_prior.log_prob()
+        r_post_lpdf = self.variational.r_post.log_prob( \
+            self.variational.q_prior.lambda_samples)
+
+        self.elbos = self.model.log_prob(x, self.samples) - q_mf_lpdf
+        loss_mf = q_mf_lpdf * tf.stop_gradient(self.elbos)
+
+        loss_second = r_post_lpdf - q_prior_lpdf
+        self.elbos += loss_second
+
+        loss_third = q_mf_lpdf * tf.stop_gradient(r_post_lpdf)
+        return -tf.reduce_mean(loss_mf + loss_second + loss_third)
+        # TODO how to return gradient for phi as well?
+
+    def build_reparam_loss(self):
+        """
+        Loss function to minimize, whose gradient is a stochastic
+        gradient based on the reparameterization trick.
+        (This is if q_mf uses reparam loss)
+        """
+        # TODO
+        # The only difference is the first and third term
+        pass
+
+    # TODO if q_prior needs score loss
+    # TODO ith gradient computations

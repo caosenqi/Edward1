@@ -3,7 +3,59 @@ import numpy as np
 import tensorflow as tf
 
 from blackbox.stats import bernoulli, beta, norm
-from blackbox.util import get_dims
+
+class Likelihood:
+    """
+    Base class for variational likelihoods, q(z | lambda).
+    """
+    def __init__(self, num_vars):
+        self.num_vars = num_vars
+        self.num_params = None
+
+    # TODO use __str__(self):
+    def print_params(self, sess):
+        pass
+
+    # TODO if possible but don't force Inference to see these
+    #def sample_noise(self, size):
+    #    """
+    #    eps = sample_noise() ~ s(eps)
+    #    s.t. z = reparam(eps; lambda) ~ q(z | lambda)
+    #    """
+    #    pass
+
+    #def reparam(self, eps):
+    #    """
+    #    eps = sample_noise() ~ s(eps)
+    #    s.t. z = reparam(eps; lambda) ~ q(z | lambda)
+    #    """
+    #    pass
+
+    # TODO have that reparam(sample_noise) thing be default for
+    # classes which have these methods in their derived class
+    def sample(self, size, sess):
+        """
+        z ~ q(z | lambda)
+
+        Returns
+        -------
+        np.ndarray
+            n_minibatch x dim(z) array of type np.float32, where each
+            row is a sample from q.
+
+        Notes
+        -----
+        Unlike the other methods, this return object is a realization
+        of a TensorFlow array.
+
+        The method defaults to sampling noise and reparameterizing it
+        (which will error out if it is not possible).
+        """
+        return sess.run(self.reparam(self.sample_noise(size)))
+
+    def log_prob_zi(self, i, z):
+        """log q(z_i | lambda_i)"""
+        pass
 
 class MFBernoulli:
     """
@@ -20,7 +72,6 @@ class MFBernoulli:
         # TODO something about constraining the parameters in simplex
         # TODO deal with truncations
 
-    # TODO use __str__(self):
     def print_params(self, sess):
         p = sess.run([self.transform(self.p_unconst)])[0]
         if p.size > 1:
@@ -128,7 +179,10 @@ class MFGaussian:
         s.t. z = reparam(eps; lambda) ~ q(z | lambda)
         """
         # Not using this, since TensorFlow has a large overhead
-        # whenever calling sess.run().
+        # whenever calling sess.run(). In such as case, I shouldn't
+        # use placeholders in the first place, but I need them to be
+        # compatible with running model.log_prob() for models that
+        # don't use TensorFlow arithmetic.
         #samples = sess.run(tf.random_normal(self.samples.get_shape()))
         return norm.rvs(size=size)
 
@@ -147,7 +201,7 @@ class MFGaussian:
         """
         m, s = sess.run([ \
             self.transform_m(self.m_unconst),
-            self.transform_s(self.s_unconst)]) 
+            self.transform_s(self.s_unconst)])
 
         return m + s * norm.rvs(size=size)
 
@@ -169,3 +223,7 @@ class MFGaussian:
     # TODO entropy is bugged
     #def entropy(self):
     #    return norm.entropy(self.transform_s(self.s_unconst))
+
+# PRIORS
+class FlowPrior:
+    pass
