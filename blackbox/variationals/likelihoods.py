@@ -46,8 +46,6 @@ class Likelihood:
     #    """
     #    raise NotImplementedError()
 
-    # TODO have that reparam(sample_noise) thing be default for
-    # classes which have these methods in their derived class
     def sample(self, size, sess):
         """
         z ~ q(z | lambda)
@@ -73,17 +71,15 @@ class Likelihood:
         """log q(z_i | lambda_i)"""
         raise NotImplementedError()
 
-class MFBernoulli:
+class MFBernoulli(Likelihood):
     """
     q(z | lambda ) = prod_{i=1}^d Bernoulli(z[i] | lambda[i])
     """
-    def __init__(self, num_vars):
-        self.num_vars = num_vars
-        self.num_params = num_vars
+    def __init__(self, *args, **kwargs):
+        Likelihood.__init__(self, *args, **kwargs)
+        self.num_params = self.num_vars
 
-        self.p_unconst = tf.Variable(tf.random_normal([num_vars]))
-        # TODO make all variables outside, not in these classes but as
-        # part of inference most generally
+        self.p_unconst = tf.Variable(tf.random_normal([self.num_vars]))
         self.transform = tf.sigmoid
         # TODO something about constraining the parameters in simplex
         # TODO deal with truncations
@@ -123,16 +119,16 @@ class MFBernoulli:
 
         return bernoulli.logpmf(z[:, i], pi)
 
-class MFBeta:
+class MFBeta(Likelihood):
     """
     q(z | lambda ) = prod_{i=1}^d Beta(z[i] | lambda[i])
     """
-    def __init__(self, num_vars):
-        self.num_vars = num_vars
-        self.num_params = 2*num_vars
+    def __init__(self, *args, **kwargs):
+        Likelihood.__init__(self, *args, **kwargs)
+        self.num_params = 2*self.num_vars
 
-        self.a_unconst = tf.Variable(tf.random_normal([num_vars]))
-        self.b_unconst = tf.Variable(tf.random_normal([num_vars]))
+        self.a_unconst = tf.Variable(tf.random_normal([self.num_vars]))
+        self.b_unconst = tf.Variable(tf.random_normal([self.num_vars]))
         self.transform = tf.nn.softplus
 
     def print_params(self, sess):
@@ -146,8 +142,8 @@ class MFBeta:
         print(b)
 
     def set_params(self, lamda):
-        self.a_unconst = lamda[:num_vars]
-        self.b_unconst = lamda[num_vars:]
+        self.a_unconst = lamda[:self.num_vars]
+        self.b_unconst = lamda[self.num_vars:]
 
     def sample(self, size, sess):
         """z ~ q(z | lambda)"""
@@ -173,16 +169,16 @@ class MFBeta:
         #bi = self.transform(self.b_unconst[i])
         return beta.logpdf(z[:, i], ai, bi)
 
-class MFGaussian:
+class MFGaussian(Likelihood):
     """
     q(z | lambda ) = prod_{i=1}^d Gaussian(z[i] | lambda[i])
     """
-    def __init__(self, num_vars):
-        self.num_vars = num_vars
-        self.num_params = 2*num_vars
+    def __init__(self, *args, **kwargs):
+        Likelihood.__init__(self, *args, **kwargs)
+        self.num_params = 2*self.num_vars
 
-        self.m_unconst = tf.Variable(tf.random_normal([num_vars]))
-        self.s_unconst = tf.Variable(tf.random_normal([num_vars]))
+        self.m_unconst = tf.Variable(tf.random_normal([self.num_vars]))
+        self.s_unconst = tf.Variable(tf.random_normal([self.num_vars]))
         self.transform_m = tf.identity
         self.transform_s = tf.nn.softplus
 
@@ -197,8 +193,8 @@ class MFGaussian:
         print(s)
 
     def set_params(self, lamda):
-        self.m_unconst = lamda[:num_vars]
-        self.s_unconst = lamda[num_vars:]
+        self.m_unconst = lamda[:self.num_vars]
+        self.s_unconst = lamda[self.num_vars:]
 
     def sample_noise(self, size):
         """
