@@ -14,7 +14,7 @@ class Likelihood:
 
     # TODO use __str__(self):
     def print_params(self, sess):
-        pass
+        raise NotImplementedError()
 
     # TODO if possible but don't force Inference to see these
     #def sample_noise(self, size):
@@ -22,14 +22,14 @@ class Likelihood:
     #    eps = sample_noise() ~ s(eps)
     #    s.t. z = reparam(eps; lambda) ~ q(z | lambda)
     #    """
-    #    pass
+    #    raise NotImplementedError()
 
     #def reparam(self, eps):
     #    """
     #    eps = sample_noise() ~ s(eps)
     #    s.t. z = reparam(eps; lambda) ~ q(z | lambda)
     #    """
-    #    pass
+    #    raise NotImplementedError()
 
     # TODO have that reparam(sample_noise) thing be default for
     # classes which have these methods in their derived class
@@ -55,7 +55,7 @@ class Likelihood:
 
     def log_prob_zi(self, i, z):
         """log q(z_i | lambda_i)"""
-        pass
+        raise NotImplementedError()
 
 class MFBernoulli:
     """
@@ -223,7 +223,3 @@ class MFGaussian:
     # TODO entropy is bugged
     #def entropy(self):
     #    return norm.entropy(self.transform_s(self.s_unconst))
-
-# PRIORS
-class FlowPrior:
-    pass

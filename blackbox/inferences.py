@@ -205,7 +205,7 @@ class HVI(Inference):
         """
         # TODO
         # The only difference is the first and third term
-        pass
+        raise NotImplementedError()
 
     # TODO if q_prior needs score loss
     # TODO ith gradient computations

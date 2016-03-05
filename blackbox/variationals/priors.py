@@ -8,21 +8,21 @@ class Prior:
         self.lambda_samples = None
 
     def print_params(self, sess):
-        pass
+        raise NotImplementedError()
 
     def sample_noise(self, size):
         """
         eps = sample_noise() ~ s(eps)
         s.t. lambda = reparam(eps; theta) ~ q(lambda | theta)
         """
-        pass
+        raise NotImplementedError()
 
     def reparam(self, eps):
         """
         eps = sample_noise() ~ s(eps)
         s.t. lambda = reparam(eps; theta) ~ q(lambda | theta)
         """
-        pass
+        raise NotImplementedError()
 
     def sample(self, size, sess):
         """
@@ -57,4 +57,4 @@ class Prior:
 
     def log_prob(self):
         """sum_{b=1}^B log q(lambda_samples[b,:] | theta)"""
-        pass
+        raise NotImplementedError()

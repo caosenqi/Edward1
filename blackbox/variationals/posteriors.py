@@ -8,4 +8,4 @@ class Posterior:
 
     def log_prob(self, lamda):
         """log r(lambda | phi)"""
-        pass
+        raise NotImplementedError()
