@@ -24,6 +24,18 @@ class Likelihood:
     #    """
     #    eps = sample_noise() ~ s(eps)
     #    s.t. z = reparam(eps; lambda) ~ q(z | lambda)
+
+    #    Returns
+    #    -------
+    #    np.ndarray
+    #        n_minibatch x dim(lambda) array of type np.float32, where each
+    #        row is a sample from q.
+
+    #    Notes
+    #    -----
+    #    Unlike the other methods, this return object is a realization
+    #    of a TensorFlow array. This is required as we rely on
+    #    NumPy/SciPy for sampling from distributions.
     #    """
     #    raise NotImplementedError()
 
@@ -49,10 +61,11 @@ class Likelihood:
         Notes
         -----
         Unlike the other methods, this return object is a realization
-        of a TensorFlow array.
+        of a TensorFlow array. This is required as we rely on
+        NumPy/SciPy for sampling from distributions.
 
         The method defaults to sampling noise and reparameterizing it
-        (which will error out if it is not possible).
+        (which will error out if this is not possible).
         """
         return sess.run(self.reparam(self.sample_noise(size)))
 

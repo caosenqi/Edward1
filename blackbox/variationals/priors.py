@@ -14,6 +14,18 @@ class Prior:
         """
         eps = sample_noise() ~ s(eps)
         s.t. lambda = reparam(eps; theta) ~ q(lambda | theta)
+
+        Returns
+        -------
+        np.ndarray
+            n_minibatch x dim(lambda) array of type np.float32, where each
+            row is a sample from q.
+
+        Notes
+        -----
+        Unlike the other methods, this return object is a realization
+        of a TensorFlow array. This is required as we rely on
+        NumPy/SciPy for sampling from distributions.
         """
         raise NotImplementedError()
 
@@ -30,21 +42,18 @@ class Prior:
 
         Returns
         -------
-        tf.tensor
+        np.ndarray
             n_minibatch x dim(lambda) array of type np.float32, where each
             row is a sample from q.
 
         Notes
         -----
-        Unlike the sample method for variational likelihoods, this
-        return object is a TensorFlow array. This is all computations
-        with respect to lambda are written internally, so we don't
-        require an object like a placeholder so that computation can
-        be compatible with probability models not written in
-        TensorFlow.
+        Unlike the other methods, this return object is a realization
+        of a TensorFlow array. This is required as we rely on
+        NumPy/SciPy for sampling from distributions.
 
         The method defaults to sampling noise and reparameterizing it
-        (which will error out if it is not possible).
+        (which will error out if this is not possible).
 
         TODO
         The method stores the samples for usage in log_prob. This is
@@ -53,7 +62,7 @@ class Prior:
         class.
         """
         self.lambda_samples = self.reparam(self.sample_noise(size))
-        return self.lambda_samples
+        return sess.run(self.lambda_samples)
 
     def log_prob(self):
         """sum_{b=1}^B log q(lambda_samples[b,:] | theta)"""

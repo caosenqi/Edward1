@@ -31,6 +31,6 @@ class HVM:
         z ~ q(z | lambda)
         """
         eps = self.q_prior.sample_noise(size, sess)
-        lamda = self.q_prior.reparam(size, sess)
+        lamda = self.q_prior.reparam(eps)
         self.q_mf.set_params(lamda)
         return self.q_mf.sample(size, sess)
