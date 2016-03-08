@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+from scipy.special import factorial
 
 def set_seed(x):
     """
@@ -44,6 +45,21 @@ def get_dims(x):
         return [1]
     else: # array
         return [dim.value for dim in dims]
+
+def log_multinomial(x, n):
+    num = tf.reduce_prod(factorial(x))
+    denom = factorial(n)
+    return tf.log(tf.truediv(num, denom))
+
+
+def log_dirichlet(x):
+    num =  tf.reduce_prod(log_gamma(x))
+    denom = log_gamma(tf.reduce_sum(x))
+    return num/denom
+
+
+def log_inv_gamma(x, y):
+    return log_gamma(x) - tf.mul(x, tf.log(y))
 
 def log_gamma(x):
     """
