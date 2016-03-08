@@ -19,32 +19,31 @@ class Likelihood:
     def set_params(self, lamda):
         raise NotImplementedError()
 
-    # TODO if possible but don't force Inference to see these
-    #def sample_noise(self, size):
-    #    """
-    #    eps = sample_noise() ~ s(eps)
-    #    s.t. z = reparam(eps; lambda) ~ q(z | lambda)
+    def sample_noise(self, size):
+        """
+        eps = sample_noise() ~ s(eps)
+        s.t. z = reparam(eps; lambda) ~ q(z | lambda)
 
-    #    Returns
-    #    -------
-    #    np.ndarray
-    #        n_minibatch x dim(lambda) array of type np.float32, where each
-    #        row is a sample from q.
+        Returns
+        -------
+        np.ndarray
+            n_minibatch x dim(lambda) array of type np.float32, where each
+            row is a sample from q.
 
-    #    Notes
-    #    -----
-    #    Unlike the other methods, this return object is a realization
-    #    of a TensorFlow array. This is required as we rely on
-    #    NumPy/SciPy for sampling from distributions.
-    #    """
-    #    raise NotImplementedError()
+        Notes
+        -----
+        Unlike the other methods, this return object is a realization
+        of a TensorFlow array. This is required as we rely on
+        NumPy/SciPy for sampling from distributions.
+        """
+        raise NotImplementedError()
 
-    #def reparam(self, eps):
-    #    """
-    #    eps = sample_noise() ~ s(eps)
-    #    s.t. z = reparam(eps; lambda) ~ q(z | lambda)
-    #    """
-    #    raise NotImplementedError()
+    def reparam(self, eps):
+        """
+        eps = sample_noise() ~ s(eps)
+        s.t. z = reparam(eps; lambda) ~ q(z | lambda)
+        """
+        raise NotImplementedError()
 
     def sample(self, size, sess):
         """

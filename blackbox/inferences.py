@@ -48,7 +48,7 @@ class Inference:
         self.n_minibatch = n_minibatch
         self.n_data = n_data
         self.n_print = n_print
-        if score is None and hasattr(self.variational, 'reparam'):
+        if score is None and 'reparam' in self.variational.__class__.__dict__:
             self.score = False
         else:
             self.score = True
