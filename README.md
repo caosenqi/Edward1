@@ -43,17 +43,7 @@ few:
 
 * [TODO]()
 
-(This list will be removed; each item will be a specific example in
-the list of highlighted examples above.)
-
-* variational models ([Ranganath et al., 2015](http://arxiv.org/abs/1511.02386); [Tran et al., 2016](http://arxiv.org/abs/1511.06499))
-* $f$-divergences
-* approximate predictive checks
-* inference networks ([Kingma and Welling, 2014](http://arxiv.org/abs/1312.6114); [Rezende et al., 2014](http://arxiv.org/abs/1401.4082))
-* stochastic dynamics ([Salimans et al., 2015](http://arxiv.org/abs/1410.6460))
-* Bayesian nonparametrics ([Kurihara et al., 2006](http://papers.nips.cc/paper/3025-accelerated-variational-dirichlet-process-mixtures.pdf))
-* multicanonical ([Mandt et al., 2016](http://arxiv.org/abs/1411.1810))
-* streaming ([McInerney et al., 2015](http://arxiv.org/abs/1507.05253))
+[A comprehensive list of features is written here](https://github.com/Blei-Lab/blackbox/wiki), along with references.
 
 ## Documentation
 
@@ -73,7 +63,7 @@ pip install -e "git+https://github.com/blei-lab/blackbox.git#egg=blackbox"
 
 ```
 @misc{
-  title = {{blackbox}: {B}lack box inference for probabilistic models},
+  title = {{blackbox: Black box inference for probabilistic models}},
   author = {},
   note = {Python package version 0.1},
   url = {https://github.com/Blei-Lab/blackbox},
