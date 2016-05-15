@@ -42,12 +42,9 @@ def _test_log_prob_zi(n_minibatch, num_factors, K):
 
         z_tf = tf.constant(z, dtype=tf.float32)
         for i in xrange(num_factors):
-            # NOTE: since Tensorflow has no special functions, the values here are
-            # only an approximation
             assert np.allclose(
                 multinomial.log_prob_zi(i, z_tf).eval(),
-                multinomial_logpmf_vec(z[:, (i*K):((i+1)*K)], 1, pi[i, :]),
-                atol=1e-4)
+                multinomial_logpmf_vec(z[:, (i*K):((i+1)*K)], 1, pi[i, :]))
 
 def test_log_prob_zi_1d_1v_2k():
     _test_log_prob_zi(1, 1, 2)

@@ -9,9 +9,9 @@ sess = tf.Session()
 
 def _assert_eq(val_ed, val_true):
     with sess.as_default():
-        # NOTE: since Tensorflow has no special functions, the values here are
-        # only an approximation
-        assert np.allclose(val_ed.eval(), val_true, atol=1e-4)
+        print(val_ed.eval())
+        print(val_true)
+        assert np.allclose(val_ed.eval(), val_true)
 
 def _test_logpdf(x, a=0.5, b=0.5):
     xtf = tf.constant(x)
@@ -39,3 +39,7 @@ def test_logpdf_1d():
 
 def test_logpdf_2d():
     _test_logpdf(np.array([[0.5, 0.3, 0.8, 0.1],[0.5, 0.3, 0.8, 0.1]]))
+
+test_logpdf_scalar()
+test_logpdf_1d()
+test_logpdf_2d()

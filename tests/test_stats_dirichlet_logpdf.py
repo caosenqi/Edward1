@@ -18,9 +18,9 @@ def dirichlet_logpdf_vec(x, alpha):
 
 def _assert_eq(val_ed, val_true):
     with sess.as_default():
-        # NOTE: since Tensorflow has no special functions, the values here are
-        # only an approximation
-        assert np.allclose(val_ed.eval(), val_true, atol=1e-4)
+        print(val_ed.eval())
+        print(val_true)
+        assert np.allclose(val_ed.eval(), val_true)
 
 def _test_logpdf(x, alpha=np.array([0.5, 0.5])):
     xtf = tf.constant(x)
@@ -53,3 +53,6 @@ def test_logpdf_2d():
 
     _test_logpdf(np.array([[0.3, 0.7],[0.2, 0.8]]), alpha=np.array([5.0, 0.5]))
     _test_logpdf(np.array([[0.2, 0.8],[0.3, 0.7]]), alpha=np.array([5.0, 0.5]))
+
+test_logpdf_1d()
+test_logpdf_2d()

@@ -104,36 +104,9 @@ def kl_multivariate_normal(loc, scale):
     return -0.5 * tf.reduce_sum(1.0 + 2.0 * tf.log(scale + 1e-8) - \
                                 tf.square(loc) - tf.square(scale))
 
-def digamma(x):
-    """
-    TensorFlow doesn't have special functions, so use a
-    log/exp/polynomial approximation.
-    http://www.machinedlearnings.com/2011/06/faster-lda.html
-    """
-    twopx = 2.0 + x
-    logterm = tf.log(twopx)
-    return - (1.0 + 2.0 * x) / (x * (1.0 + x)) - \
-           (13.0 + 6.0 * x) / (12.0 * twopx * twopx) + logterm
-
-def log_gamma(x):
-    """
-    TensorFlow doesn't have special functions, so use a
-    log/exp/polynomial approximation.
-    http://www.machinedlearnings.com/2011/06/faster-lda.html
-    """
-    logterm = tf.log(x * (1.0 + x) * (2.0 + x))
-    xp3 = 3.0 + x
-    return -2.081061466 - x + 0.0833333 / xp3 - logterm + (2.5 + x) * tf.log(xp3)
-
-def log_beta(x, y):
-    """
-    TensorFlow doesn't have special functions, so use a
-    log/exp/polynomial approximation.
-    """
-    return log_gamma(x) + log_gamma(y) - log_gamma(x+y)
-
-def multivariate_log_beta(x):
-    return tf.reduce_sum(log_gamma(x)) - log_gamma(tf.reduce_sum(x))
+def lbeta(x):
+    """This is available in TensorFlow v0.8"""
+    return tf.reduce_sum(tf.lgamma(x)) - tf.lgamma(tf.reduce_sum(x))
 
 def rbf(x, y=0.0, sigma=1.0, l=1.0):
     """
